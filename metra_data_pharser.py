@@ -86,7 +86,7 @@ for d in static_schedule_input:
                 
 
 train_times_sort = sorted(train_times)
-print(train_times_sort, '\n')
+#print(train_times_sort, '\n')
 now = datetime.now()
 #print(now, '\n')
 
@@ -109,7 +109,7 @@ for t in train_times_sort:
 next_train = future_train_times[0]
 print('next_train(scheduled)=', next_train.strftime("%I:%M %p"))
 next_train_id = train_options_filtered[future_train_times2[next_train][0]]
-print(next_train_id)
+#print(next_train_id)
 
 # fething the live data here
 response4 = requests.get('https://gtfsapi.metrarail.com/gtfs/tripUpdates', auth=(
@@ -117,7 +117,6 @@ response4 = requests.get('https://gtfsapi.metrarail.com/gtfs/tripUpdates', auth=
 realtime_trips_updates_input = json.loads(response4.content.decode("utf-8"))
 
 for dic in realtime_trips_updates_input:
-
     if dic['id'] == next_train_id:
         print('live dataaaaa')
         my_delay = dic['trip_update']['stop_time_update']['arrival']['delay']
