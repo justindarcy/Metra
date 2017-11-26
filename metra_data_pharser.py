@@ -31,8 +31,9 @@ destination = "EVANSTON" # station you go to
 direction='blank'
 train_times=[]
 future_train_times=[]
+future_train_times2={}
 train_options_trip_id=[]
-train_options_filtered=[]
+train_options_filtered={}
 next_train_id=[]
 
 # ------calendar variables---------
@@ -45,7 +46,6 @@ service_id_list=[]
 def service_finder():   
     for cal in calendar_api:
         for key, value in cal.items():
-    
             if key == today and value==1:
                 service_id_list.append(cal['service_id'])
     return(service_id_list)
@@ -82,32 +82,34 @@ for d in static_schedule_input:
 
             if d['arrival_time'] not in train_times and d['trip_id'] in train_options_trip_id:
                 train_times.append(d['arrival_time'])
-                train_options_filtered.append(d['trip_id'])
+                train_options_filtered[d['arrival_time']]= [d['trip_id']]
                 
+
 train_times_sort = sorted(train_times)
-#print(train_times_sort, '\n')
+print(train_times_sort, '\n')
 now = datetime.now()
-c=0
+#print(now, '\n')
+
 for t in train_times_sort:
     if t[0:2] == '24':
         t_new = datetime.strptime(t, '24:%M:%S')
         # add tomorrows year-month-day, below (+1) likely doesn't work
         t_new = t_new.replace(year=now.year, month=now.month, day=now.day+1)
         if t_new>now:
+            future_train_times2[t_new]= [t]   #  potentially make these a dictionary!!!!!!!!!!!!!!
             future_train_times.append(t_new)
     else:
         t_new = datetime.strptime(t, '%H:%M:%S')
         t_new = t_new.replace(year=now.year, month=now.month, day=now.day)
         if t_new>now:
+            future_train_times2[t_new]= [t] #  potentially make these a dictionary!!!!!!!!!!!!!!!!!
             future_train_times.append(t_new)
-            next_train_id.append(train_options_filtered[c])
-    c=+1
 
 
 next_train = future_train_times[0]
 print('next_train(scheduled)=', next_train.strftime("%I:%M %p"))
-print(next_train_id[0])
-
+next_train_id = train_options_filtered[future_train_times2[next_train][0]]
+print(next_train_id)
 
 # fething the live data here
 response4 = requests.get('https://gtfsapi.metrarail.com/gtfs/tripUpdates', auth=(
@@ -116,7 +118,7 @@ realtime_trips_updates_input = json.loads(response4.content.decode("utf-8"))
 
 for dic in realtime_trips_updates_input:
 
-    if dic['id'] == next_train_id[0]:
+    if dic['id'] == next_train_id:
         print('live dataaaaa')
         my_delay = dic['trip_update']['stop_time_update']['arrival']['delay']
         print(my_delay)
