@@ -106,20 +106,22 @@ for t in train_times_sort:
 
 next_train = future_train_times[0]
 print('next_train(scheduled)=', next_train.strftime("%I:%M %p"))
-#print(next_train_id[0])
+print(next_train_id[0])
+
 
 # fething the live data here
-response = requests.get('https://gtfsapi.metrarail.com/gtfs/tripUpdates', auth=(
+response4 = requests.get('https://gtfsapi.metrarail.com/gtfs/tripUpdates', auth=(
 'f0db64a9715bf9d74470f5587b8750b2', 'd3ca32f24b4868e11c90b43fd9bb6589'))
-realtime_trips_updates_input = json.loads(response.content.decode("utf-8"))
+realtime_trips_updates_input = json.loads(response4.content.decode("utf-8"))
 
 for dic in realtime_trips_updates_input:
+
     if dic['id'] == next_train_id[0]:
-        
+        print('live dataaaaa')
         my_delay = dic['trip_update']['stop_time_update']['arrival']['delay']
+        print(my_delay)
         
-        
-my_delay_exists = 'my_delay' in locals() or 'var' in globals()
+my_delay_exists = 'my_delay' in locals() or 'my_delay' in globals()
 
 if my_delay_exists:
     print('Live data exists')
