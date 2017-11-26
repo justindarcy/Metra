@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests, json, calendar
 from datetime import datetime
-from dateutil import tz
+#from dateutil import tz
 
 # ---------------------fething the data here------------------------
 response = requests.get('https://gtfsapi.metrarail.com/gtfs/schedule/stop_times', auth=(
